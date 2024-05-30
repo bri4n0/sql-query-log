@@ -1,0 +1,33 @@
+{
+    "name": "Bri4n0/sql-query-log",
+    "description": "Output Laravel SQL query log.",
+    "keywords": ["laravel", "sql", "query", "log"],
+    "type": "library",
+    "support": {
+        "issues": "https://github.com/Bri4n0/sql-query-log/issues",
+        "source": "https://github.com/Bri4n0/sql-query-log"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bri4n0\\SqlQueryLog\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Quang Hòa",
+            "email": "hoatq.dev@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bri4n0\\Bri4n0\\DataBaseQueryServiceProvider"
+            ]
+        }
+    }
+}
