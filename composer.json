@@ -3,6 +3,7 @@
     "description": "Output Laravel SQL query log.",
     "keywords": ["laravel", "sql", "query", "log"],
     "type": "library",
+    "license": "MIT",
     "support": {
         "issues": "https://github.com/Bri4n0/sql-query-log/issues",
         "source": "https://github.com/Bri4n0/sql-query-log"
@@ -19,12 +20,14 @@
         }
     ],
     "require": {
-        "php": "^8.2.0",
-        "illuminate/support": "^11.9"
+        "php": "^8.0.0",
+        "illuminate/support": "^v8.0.0"
     },
-    "minimum-stability": "dev",
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
     "prefer-stable": true,
-    "license": "MIT",
     "extra": {
         "laravel": {
             "providers": [

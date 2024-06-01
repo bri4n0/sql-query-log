@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Bri4n0\SqlQueryLog;
@@ -26,10 +27,6 @@ class DataBaseQueryServiceProvider extends ServiceProvider
         }
         $logLevel = config('logging.sql_log_level');
 
-        if ($logLevel) {
-            Log::setDefaultDriver($logLevel);
-        }
-
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__ . '/../config/logging.php' => config_path('logging.php'),
@@ -41,8 +38,10 @@ class DataBaseQueryServiceProvider extends ServiceProvider
         if ($logChannel) {
             $log = Log::channel($logChannel);
         }
+        $log->{$logLevel}('-------------' . request()->fullUrl() . '----------------');
+        $log->{$logLevel}('-' . json_encode(request()->all()) . '-');
 
-        DB::listen(function ($query) use ($log, $logChannel) {
+        DB::listen(function ($query) use ($log, $logLevel) {
             $sql = $query->sql;
             foreach ($query->bindings as $binding) {
                 if (is_string($binding)) {
@@ -54,23 +53,22 @@ class DataBaseQueryServiceProvider extends ServiceProvider
                 } elseif ($binding instanceof \DateTime) {
                     $binding = "'{$binding->format('Y-m-d H:i:s')}'";
                 }
-
-                $sql = preg_replace("/\?/", $binding, $sql, 1);
+                $sql = preg_replace("/\?/", (string) $binding, $sql, 1);
             }
 
-            $log::{$logChannel}('SQL', ['sql' => $sql, 'time' => "$query->time ms"]);
+            $log->{$logLevel}('SQL', ['sql' => $sql, 'time' => "$query->time ms"]);
         });
 
-        Event::listen(TransactionBeginning::class, function (TransactionBeginning $event) use ($log, $logChannel) {
-            $log::{$logChannel}('START TRANSACTION');
+        Event::listen(TransactionBeginning::class, function (TransactionBeginning $event) use ($log, $logLevel) {
+            $log->{$logLevel}('START TRANSACTION');
         });
 
-        Event::listen(TransactionCommitted::class, function (TransactionCommitted $event) use ($log, $logChannel) {
-            $log::{$logChannel}('COMMIT');
+        Event::listen(TransactionCommitted::class, function (TransactionCommitted $event) use ($log, $logLevel) {
+            $log->{$logLevel}('COMMIT');
         });
 
-        Event::listen(TransactionRolledBack::class, function (TransactionRolledBack $event) use ($log, $logChannel) {
-            $log::{$logChannel}('ROLLBACK');
+        Event::listen(TransactionRolledBack::class, function (TransactionRolledBack $event) use ($log, $logLevel) {
+            $log->{$logLevel}('ROLLBACK');
         });
     }
 }
